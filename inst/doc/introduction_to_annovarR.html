@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Jianfeng Li" />
+
+<meta name="date" content="2018-01-08" />
+
+<title>Introduction to annovarR</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%7D%0Apre%20%7B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to annovarR</h1>
+<h4 class="author"><em>Jianfeng Li</em></h4>
+<h4 class="date"><em>2018-01-08</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Interpretation of genetic variation data is a crucial step to understand the relationship between gene sequence changes and biological function. There are several annotation tools, such as <a href="http://annovar.openbioinformatics.org/">ANNOVAR</a>, <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">VEP</a>, <a href="https://github.com/brentp/vcfanno">vcfanno</a>, have been developed. These tools make gene variation data annotation more convenient and faster than before. However, because different annotation tools have their own methods of use and design architecture, this increases the difficulty for bioinfomatics beginner to utilize these tools. In addition, many of existing database resources and annotation scripts have not been well integrated and shared.</p>
+<p>So, it is worth us to develop an integrated annotation system that not only include the integration of different annotation tools but also integrate the relevant database resources. Here, we present a integrated annotation R package ‘<a href="https://github.com/JhuangLab/annovarR">annovarR</a>’ to do this. It provides a series R functions to integrate external annotation tools and annotation databases.</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>To install annovarR, first you need to install <a href="https://cran.r-project.org/">R</a> interpreter (Supported Linux, MAC and Windows). This package have been uploaded on The Comprehensive R Archive Network (CRAN, <a href="https://cran.r-project.org">https://cran.r-project.org</a>). You can use the command to install annovarR package easily:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># setRepositories ind 1 is CRAN, 2 is Bioconductor</span>
+<span class="kw">setRepositories</span>(<span class="dt">ind=</span><span class="dv">1</span>:<span class="dv">2</span>)
+<span class="kw">install.packages</span>(<span class="st">'annovarR'</span>)</code></pre>
+<p>If you want to use the latest development version, you need to use <a href="https://github.com/hadley/devtools">devtools</a> <code>install_github</code> function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install the cutting edge development version from GitHub:</span>
+<span class="co"># install.packages(&quot;devtools&quot;)</span>
+devtools::<span class="kw">install_github</span>(<span class="st">&quot;JhuangLab/annovarR&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;develop&quot;</span>)</code></pre>
+<p>Lastly, annovarR can also be installed using the source code archive (<code>R CMD INSTALL</code>). In this situation, you need to manually handle dependencies on many packages.</p>
+<p><strong>Tips</strong>: When the <a href="https://github.com/r-dbi/RMySQL">RMySQL</a> or <a href="https://github.com/r-dbi/RSQLite">RSQLite</a> package can not directly installed by R, <a href="https://conda.io/docs/">conda</a> is an optional solution: <code>conda install -c r r-rmysql r-rsqlite</code>. Or you need root permissions to install the corresponding system dependency.</p>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<div id="download-database-resource" class="section level3">
+<h3>Download database resource</h3>
+<p>annovarR use function <code>download.database</code> to download the annotation databases.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Show all annovarR supported database</span>
+<span class="kw">download.database</span>(<span class="dt">show.all.names =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;  [1] &quot;db_annovar_1000g&quot;                 &quot;db_annovar_1000g_sqlite&quot;         </span>
+<span class="co">#&gt;  [3] &quot;db_annovar_avsift&quot;                &quot;db_annovar_avsnp&quot;                </span>
+<span class="co">#&gt;  [5] &quot;db_annovar_avsnp_sqlite&quot;          &quot;db_annovar_brvar&quot;                </span>
+<span class="co">#&gt;  [7] &quot;db_annovar_cadd&quot;                  &quot;db_annovar_cadd_sqlite&quot;          </span>
+<span class="co">#&gt;  [9] &quot;db_annovar_cg&quot;                    &quot;db_annovar_civic_gene_summaries&quot; </span>
+<span class="co">#&gt; [11] &quot;db_annovar_clinvar&quot;               &quot;db_annovar_clinvar_sqlite&quot;       </span>
+<span class="co">#&gt; [13] &quot;db_annovar_cosmic&quot;                &quot;db_annovar_cosmic_sqlite&quot;        </span>
+<span class="co">#&gt; [15] &quot;db_annovar_cscd&quot;                  &quot;db_annovar_darned_sqlite&quot;        </span>
+<span class="co">#&gt; [17] &quot;db_annovar_dbnsfp&quot;                &quot;db_annovar_dbnsfp_sqlite&quot;        </span>
+<span class="co">#&gt; [19] &quot;db_annovar_dbscsnv&quot;               &quot;db_annovar_dbscsnv_sqlite&quot;       </span>
+<span class="co">#&gt; [21] &quot;db_annovar_dhs_gene_connectivity&quot; &quot;db_annovar_eigen&quot;                </span>
+<span class="co">#&gt; [23] &quot;db_annovar_eigen_sqlite&quot;          &quot;db_annovar_ensgene&quot;              </span>
+<span class="co">#&gt; [25] &quot;db_annovar_epi_genes&quot;             &quot;db_annovar_esp6500siv2&quot;          </span>
+<span class="co">#&gt; [27] &quot;db_annovar_exac03&quot;                &quot;db_annovar_exac03_sqlite&quot;        </span>
+<span class="co">#&gt; [29] &quot;db_annovar_fathmm&quot;                &quot;db_annovar_gdi_score&quot;            </span>
+<span class="co">#&gt; [31] &quot;db_annovar_gerp&quot;                  &quot;db_annovar_gme&quot;                  </span>
+<span class="co">#&gt; [33] &quot;db_annovar_gme_sqlite&quot;            &quot;db_annovar_gnomad&quot;               </span>
+<span class="co">#&gt; [35] &quot;db_annovar_gnomad_sqlite&quot;         &quot;db_annovar_gtex_eqtl_egenes&quot;     </span>
+<span class="co">#&gt; [37] &quot;db_annovar_gtex_eqtl_pairs&quot;       &quot;db_annovar_gwava&quot;                </span>
+<span class="co">#&gt; [39] &quot;db_annovar_gwava_sqlite&quot;          &quot;db_annovar_hgnc&quot;                 </span>
+<span class="co">#&gt; [41] &quot;db_annovar_hrcr1&quot;                 &quot;db_annovar_hrcr1_sqlite&quot;         </span>
+<span class="co">#&gt; [43] &quot;db_annovar_icgc21&quot;                &quot;db_annovar_icgc_sqlite&quot;          </span>
+<span class="co">#&gt; [45] &quot;db_annovar_intervar&quot;              &quot;db_annovar_intervar_sqlite&quot;      </span>
+<span class="co">#&gt; [47] &quot;db_annovar_kaviar&quot;                &quot;db_annovar_knowngene&quot;            </span>
+<span class="co">#&gt; [49] &quot;db_annovar_ljb26_all&quot;             &quot;db_annovar_lncediting_sqlite&quot;    </span>
+<span class="co">#&gt; [51] &quot;db_annovar_loftool_scores&quot;        &quot;db_annovar_mcap&quot;                 </span>
+<span class="co">#&gt; [53] &quot;db_annovar_mcap_sqlite&quot;           &quot;db_annovar_mitimpact&quot;            </span>
+<span class="co">#&gt; [55] &quot;db_annovar_nci60&quot;                 &quot;db_annovar_nci60_sqlite&quot;         </span>
+<span class="co">#&gt; [57] &quot;db_annovar_normal_pool&quot;           &quot;db_annovar_omim_genemap2&quot;        </span>
+<span class="co">#&gt; [59] &quot;db_annovar_popfreq&quot;               &quot;db_annovar_popfreq_sqlite&quot;       </span>
+<span class="co">#&gt; [61] &quot;db_annovar_radar_sqlite&quot;          &quot;db_annovar_rddpred_sqlite&quot;       </span>
+<span class="co">#&gt; [63] &quot;db_annovar_rediportal_sqlite&quot;     &quot;db_annovar_refgene&quot;              </span>
+<span class="co">#&gt; [65] &quot;db_annovar_regsnpintron&quot;          &quot;db_annovar_revel&quot;                </span>
+<span class="co">#&gt; [67] &quot;db_annovar_revel_sqlite&quot;          &quot;db_annovar_rvis_esv_score&quot;       </span>
+<span class="co">#&gt; [69] &quot;db_annovar_seeqtl&quot;                &quot;db_annovar_snp&quot;                  </span>
+<span class="co">#&gt; [71] &quot;db_annovar_tall_somatic_genes&quot;    &quot;db_annovar_tmcsnpdb&quot;             </span>
+<span class="co">#&gt; [73] &quot;db_annovar_varcards&quot;              &quot;db_annovar_varcards_sqlite&quot;      </span>
+<span class="co">#&gt; [75] &quot;db_ucsc_cytoband&quot;                 &quot;db_ucsc_dnase_clustered&quot;         </span>
+<span class="co">#&gt; [77] &quot;db_ucsc_ensgene&quot;                  &quot;db_ucsc_knowngene&quot;               </span>
+<span class="co">#&gt; [79] &quot;db_ucsc_refgene&quot;                  &quot;db_ucsc_tfbs_clustered&quot;</span>
+
+<span class="co"># Show all supported version of database (e.g. db_annovar_avsnp)</span>
+<span class="kw">download.database</span>(<span class="dt">download.name =</span> <span class="st">&quot;db_annovar_avsnp&quot;</span>, <span class="dt">show.all.version =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; [1] &quot;avsnp150&quot; &quot;avsnp147&quot; &quot;avsnp144&quot; &quot;avsnp142&quot; &quot;avsnp138&quot;</span>
+
+<span class="co"># Show all supprted buildver of specific version database</span>
+<span class="kw">download.database</span>(<span class="dt">download.name =</span> <span class="st">&quot;db_annovar_avsnp&quot;</span>, <span class="dt">version =</span> <span class="st">&quot;avsnp147&quot;</span>, <span class="dt">show.all.buildvers =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; $avsnp138</span>
+<span class="co">#&gt; [1] &quot;hg19&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $avsnp142</span>
+<span class="co">#&gt; [1] &quot;hg38&quot; &quot;hg19&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $avsnp144</span>
+<span class="co">#&gt; [1] &quot;hg38&quot; &quot;hg19&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $avsnp147</span>
+<span class="co">#&gt; [1] &quot;hg38&quot; &quot;hg19&quot;</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $avsnp150</span>
+<span class="co">#&gt; [1] &quot;hg38&quot; &quot;hg19&quot;</span>
+
+<span class="co"># To reduce the download time, we use the local demo configuratin file to download demo file</span>
+demo.cfg &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;demo/demo.cfg&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;annovarR&quot;</span>)
+<span class="kw">download.database</span>(<span class="st">&quot;download_demo&quot;</span>, <span class="dt">show.all.versions =</span> T, <span class="dt">download.cfg =</span> demo.cfg)
+<span class="co">#&gt; [1] &quot;demo&quot;</span>
+<span class="kw">download.database</span>(<span class="st">&quot;download_demo&quot;</span>, <span class="st">&quot;demo&quot;</span>, <span class="dt">buildver =</span> <span class="st">&quot;GRCh37&quot;</span>, <span class="dt">database.dir =</span> <span class="kw">sprintf</span>(<span class="st">&quot;%s/databases/&quot;</span>, 
+  <span class="kw">tempdir</span>()), <span class="dt">download.cfg =</span> demo.cfg)
+<span class="co">#&gt; [1] TRUE</span>
+
+<span class="co"># If you want to download other resource in BioInstaller,</span>
+<span class="co"># you can use function `install.bioinfo`</span>
+<span class="kw">install.bioinfo</span>(<span class="dt">show.all.names =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt;   [1] &quot;abyss&quot;                            &quot;arnapipe&quot;                        </span>
+<span class="co">#&gt;   [3] &quot;asap&quot;                             &quot;backspin&quot;                        </span>
+<span class="co">#&gt;   [5] &quot;bamtools&quot;                         &quot;bamutil&quot;                         </span>
+<span class="co">#&gt;   [7] &quot;bcftools&quot;                         &quot;bearscc&quot;                         </span>
+<span class="co">#&gt;   [9] &quot;bedtools&quot;                         &quot;bowtie&quot;                          </span>
+<span class="co">#&gt;  [11] &quot;bowtie2&quot;                          &quot;breakdancer&quot;                     </span>
+<span class="co">#&gt;  [13] &quot;brie&quot;                             &quot;bwa&quot;                             </span>
+<span class="co">#&gt;  [15] &quot;cnvkit&quot;                           &quot;cnvnator&quot;                        </span>
+<span class="co">#&gt;  [17] &quot;dart&quot;                             &quot;delly&quot;                           </span>
+<span class="co">#&gt;  [19] &quot;fastp&quot;                            &quot;fastq_tools&quot;                     </span>
+<span class="co">#&gt;  [21] &quot;fastx_toolkit&quot;                    &quot;freebayes&quot;                       </span>
+<span class="co">#&gt;  [23] &quot;fsclvm&quot;                           &quot;github_demo&quot;                     </span>
+<span class="co">#&gt;  [25] &quot;hisat2&quot;                           &quot;htseq&quot;                           </span>
+<span class="co">#&gt;  [27] &quot;igraph&quot;                           &quot;isop&quot;                            </span>
+<span class="co">#&gt;  [29] &quot;jvarkit&quot;                          &quot;libgtextutils&quot;                   </span>
+<span class="co">#&gt;  [31] &quot;lofreq&quot;                           &quot;macs&quot;                            </span>
+<span class="co">#&gt;  [33] &quot;mdseq&quot;                            &quot;mimosca&quot;                         </span>
+<span class="co">#&gt;  [35] &quot;multiqc&quot;                          &quot;oases&quot;                           </span>
+<span class="co">#&gt;  [37] &quot;oncotator&quot;                        &quot;outrigger&quot;                       </span>
+<span class="co">#&gt;  [39] &quot;picard&quot;                           &quot;pindel&quot;                          </span>
+<span class="co">#&gt;  [41] &quot;pxz&quot;                              &quot;raceid&quot;                          </span>
+<span class="co">#&gt;  [43] &quot;rca&quot;                              &quot;rum&quot;                             </span>
+<span class="co">#&gt;  [45] &quot;samtools_old&quot;                     &quot;sclvm&quot;                           </span>
+<span class="co">#&gt;  [47] &quot;scnorm&quot;                           &quot;seqtk&quot;                           </span>
+<span class="co">#&gt;  [49] &quot;seurat&quot;                           &quot;singlesplice&quot;                    </span>
+<span class="co">#&gt;  [51] &quot;sleuth&quot;                           &quot;somaticsniper&quot;                   </span>
+<span class="co">#&gt;  [53] &quot;sparsehash&quot;                       &quot;speedseq&quot;                        </span>
+<span class="co">#&gt;  [55] &quot;star&quot;                             &quot;strawberry&quot;                      </span>
+<span class="co">#&gt;  [57] &quot;tmap&quot;                             &quot;tophat2&quot;                         </span>
+<span class="co">#&gt;  [59] &quot;tracer&quot;                           &quot;trimgalore&quot;                      </span>
+<span class="co">#&gt;  [61] &quot;trinityrnaseq&quot;                    &quot;varscan2&quot;                        </span>
+<span class="co">#&gt;  [63] &quot;vcflib&quot;                           &quot;vcftools&quot;                        </span>
+<span class="co">#&gt;  [65] &quot;vep&quot;                              &quot;zifa&quot;                            </span>
+<span class="co">#&gt;  [67] &quot;annovar&quot;                          &quot;armadillo&quot;                       </span>
+<span class="co">#&gt;  [69] &quot;bcl2fastq&quot;                        &quot;blast&quot;                           </span>
+<span class="co">#&gt;  [71] &quot;blat&quot;                             &quot;bzip2&quot;                           </span>
+<span class="co">#&gt;  [73] &quot;cesa&quot;                             &quot;cnvnator_samtools&quot;               </span>
+<span class="co">#&gt;  [75] &quot;curl&quot;                             &quot;demo_2&quot;                          </span>
+<span class="co">#&gt;  [77] &quot;edena&quot;                            &quot;ensemble_grch37_reffa&quot;           </span>
+<span class="co">#&gt;  [79] &quot;ensemble_grch38_reffa&quot;            &quot;fastqc&quot;                          </span>
+<span class="co">#&gt;  [81] &quot;fatotwobit&quot;                       &quot;fusioncatcher&quot;                   </span>
+<span class="co">#&gt;  [83] &quot;fusioncatcher_reffa&quot;              &quot;gatk&quot;                            </span>
+<span class="co">#&gt;  [85] &quot;gatk_bundle&quot;                      &quot;gmap&quot;                            </span>
+<span class="co">#&gt;  [87] &quot;gridss&quot;                           &quot;hisat2_reffa&quot;                    </span>
+<span class="co">#&gt;  [89] &quot;htslib&quot;                           &quot;imagej&quot;                          </span>
+<span class="co">#&gt;  [91] &quot;interproscan&quot;                     &quot;liftover&quot;                        </span>
+<span class="co">#&gt;  [93] &quot;lzo&quot;                              &quot;lzop&quot;                            </span>
+<span class="co">#&gt;  [95] &quot;mapsplice2&quot;                       &quot;miniconda2&quot;                      </span>
+<span class="co">#&gt;  [97] &quot;miniconda3&quot;                       &quot;mutect&quot;                          </span>
+<span class="co">#&gt;  [99] &quot;ngs_qc_toolkit&quot;                   &quot;novoalign&quot;                       </span>
+<span class="co">#&gt; [101] &quot;pcre&quot;                             &quot;pigz&quot;                            </span>
+<span class="co">#&gt; [103] &quot;prinseq&quot;                          &quot;r&quot;                               </span>
+<span class="co">#&gt; [105] &quot;reditools&quot;                        &quot;root&quot;                            </span>
+<span class="co">#&gt; [107] &quot;samstat&quot;                          &quot;samtools&quot;                        </span>
+<span class="co">#&gt; [109] &quot;snpeff&quot;                           &quot;solexaqa&quot;                        </span>
+<span class="co">#&gt; [111] &quot;sqlite&quot;                           &quot;sratools&quot;                        </span>
+<span class="co">#&gt; [113] &quot;srnanalyzer&quot;                      &quot;ssaha2&quot;                          </span>
+<span class="co">#&gt; [115] &quot;strelka&quot;                          &quot;subread&quot;                         </span>
+<span class="co">#&gt; [117] &quot;svtoolkit&quot;                        &quot;tvc&quot;                             </span>
+<span class="co">#&gt; [119] &quot;ucsc_reffa&quot;                       &quot;ucsc_utils&quot;                      </span>
+<span class="co">#&gt; [121] &quot;vcfanno&quot;                          &quot;velvet&quot;                          </span>
+<span class="co">#&gt; [123] &quot;xz&quot;                               &quot;zlib&quot;                            </span>
+<span class="co">#&gt; [125] &quot;db_atcircdb&quot;                      &quot;db_biosystems&quot;                   </span>
+<span class="co">#&gt; [127] &quot;db_cancer_hotspot&quot;                &quot;db_cgi&quot;                          </span>
+<span class="co">#&gt; [129] &quot;db_circbase&quot;                      &quot;db_circnet&quot;                      </span>
+<span class="co">#&gt; [131] &quot;db_circrnadb&quot;                     &quot;db_civic&quot;                        </span>
+<span class="co">#&gt; [133] &quot;db_cscd&quot;                          &quot;db_denovo_db&quot;                    </span>
+<span class="co">#&gt; [135] &quot;db_dgidb&quot;                         &quot;db_differentialnet&quot;              </span>
+<span class="co">#&gt; [137] &quot;db_diseaseenhancer&quot;               &quot;db_disgenet&quot;                     </span>
+<span class="co">#&gt; [139] &quot;db_docm&quot;                          &quot;db_drugbank&quot;                     </span>
+<span class="co">#&gt; [141] &quot;db_ecodrug&quot;                       &quot;db_eggnog&quot;                       </span>
+<span class="co">#&gt; [143] &quot;db_exorbase&quot;                      &quot;db_expression_atlas&quot;             </span>
+<span class="co">#&gt; [145] &quot;db_exsnp&quot;                         &quot;db_fantom_cage_peaks&quot;            </span>
+<span class="co">#&gt; [147] &quot;db_fantom_co_expression_clusters&quot; &quot;db_fantom_enhancers&quot;             </span>
+<span class="co">#&gt; [149] &quot;db_fantom_motifs&quot;                 &quot;db_fantom_ontology&quot;              </span>
+<span class="co">#&gt; [151] &quot;db_fantom_tss_classifier&quot;         &quot;db_funcoup&quot;                      </span>
+<span class="co">#&gt; [153] &quot;db_gtex&quot;                          &quot;db_hgnc&quot;                         </span>
+<span class="co">#&gt; [155] &quot;db_hpo&quot;                           &quot;db_inbiomap&quot;                     </span>
+<span class="co">#&gt; [157] &quot;db_interpro&quot;                      &quot;db_intogen&quot;                      </span>
+<span class="co">#&gt; [159] &quot;db_lncediting&quot;                    &quot;db_medreaders&quot;                   </span>
+<span class="co">#&gt; [161] &quot;db_mndr&quot;                          &quot;db_msdd&quot;                         </span>
+<span class="co">#&gt; [163] &quot;db_omim_open&quot;                     &quot;db_omim_private&quot;                 </span>
+<span class="co">#&gt; [165] &quot;db_oncotator&quot;                     &quot;db_pancanqtl&quot;                    </span>
+<span class="co">#&gt; [167] &quot;db_proteinatlas&quot;                  &quot;db_rbp_var&quot;                      </span>
+<span class="co">#&gt; [169] &quot;db_rddpred&quot;                       &quot;db_remap&quot;                        </span>
+<span class="co">#&gt; [171] &quot;db_remap2&quot;                        &quot;db_rsnp3&quot;                        </span>
+<span class="co">#&gt; [173] &quot;db_rvarbase&quot;                      &quot;db_seecancer&quot;                    </span>
+<span class="co">#&gt; [175] &quot;db_seeqtl&quot;                        &quot;db_snipa3&quot;                       </span>
+<span class="co">#&gt; [177] &quot;db_srnanalyzer&quot;                   &quot;db_superdrug2&quot;                   </span>
+<span class="co">#&gt; [179] &quot;db_tumorfusions&quot;                  &quot;db_varcards&quot;                     </span>
+<span class="co">#&gt; [181] &quot;db_annovar_1000g&quot;                 &quot;db_annovar_1000g_sqlite&quot;         </span>
+<span class="co">#&gt; [183] &quot;db_annovar_avsift&quot;                &quot;db_annovar_avsnp&quot;                </span>
+<span class="co">#&gt; [185] &quot;db_annovar_avsnp_sqlite&quot;          &quot;db_annovar_brvar&quot;                </span>
+<span class="co">#&gt; [187] &quot;db_annovar_cadd&quot;                  &quot;db_annovar_cadd_sqlite&quot;          </span>
+<span class="co">#&gt; [189] &quot;db_annovar_cg&quot;                    &quot;db_annovar_civic_gene_summaries&quot; </span>
+<span class="co">#&gt; [191] &quot;db_annovar_clinvar&quot;               &quot;db_annovar_clinvar_sqlite&quot;       </span>
+<span class="co">#&gt; [193] &quot;db_annovar_cosmic&quot;                &quot;db_annovar_cosmic_sqlite&quot;        </span>
+<span class="co">#&gt; [195] &quot;db_annovar_cscd&quot;                  &quot;db_annovar_darned_sqlite&quot;        </span>
+<span class="co">#&gt; [197] &quot;db_annovar_dbnsfp&quot;                &quot;db_annovar_dbnsfp_sqlite&quot;        </span>
+<span class="co">#&gt; [199] &quot;db_annovar_dbscsnv&quot;               &quot;db_annovar_dbscsnv_sqlite&quot;       </span>
+<span class="co">#&gt; [201] &quot;db_annovar_dhs_gene_connectivity&quot; &quot;db_annovar_eigen&quot;                </span>
+<span class="co">#&gt; [203] &quot;db_annovar_eigen_sqlite&quot;          &quot;db_annovar_ensgene&quot;              </span>
+<span class="co">#&gt; [205] &quot;db_annovar_epi_genes&quot;             &quot;db_annovar_esp6500siv2&quot;          </span>
+<span class="co">#&gt; [207] &quot;db_annovar_exac03&quot;                &quot;db_annovar_exac03_sqlite&quot;        </span>
+<span class="co">#&gt; [209] &quot;db_annovar_fathmm&quot;                &quot;db_annovar_gdi_score&quot;            </span>
+<span class="co">#&gt; [211] &quot;db_annovar_gerp&quot;                  &quot;db_annovar_gme&quot;                  </span>
+<span class="co">#&gt; [213] &quot;db_annovar_gme_sqlite&quot;            &quot;db_annovar_gnomad&quot;               </span>
+<span class="co">#&gt; [215] &quot;db_annovar_gnomad_sqlite&quot;         &quot;db_annovar_gtex_eqtl_egenes&quot;     </span>
+<span class="co">#&gt; [217] &quot;db_annovar_gtex_eqtl_pairs&quot;       &quot;db_annovar_gwava&quot;                </span>
+<span class="co">#&gt; [219] &quot;db_annovar_gwava_sqlite&quot;          &quot;db_annovar_hgnc&quot;                 </span>
+<span class="co">#&gt; [221] &quot;db_annovar_hrcr1&quot;                 &quot;db_annovar_hrcr1_sqlite&quot;         </span>
+<span class="co">#&gt; [223] &quot;db_annovar_icgc21&quot;                &quot;db_annovar_icgc_sqlite&quot;          </span>
+<span class="co">#&gt; [225] &quot;db_annovar_intervar&quot;              &quot;db_annovar_intervar_sqlite&quot;      </span>
+<span class="co">#&gt; [227] &quot;db_annovar_kaviar&quot;                &quot;db_annovar_knowngene&quot;            </span>
+<span class="co">#&gt; [229] &quot;db_annovar_ljb26_all&quot;             &quot;db_annovar_lncediting_sqlite&quot;    </span>
+<span class="co">#&gt; [231] &quot;db_annovar_loftool_scores&quot;        &quot;db_annovar_mcap&quot;                 </span>
+<span class="co">#&gt; [233] &quot;db_annovar_mcap_sqlite&quot;           &quot;db_annovar_mitimpact&quot;            </span>
+<span class="co">#&gt; [235] &quot;db_annovar_nci60&quot;                 &quot;db_annovar_nci60_sqlite&quot;         </span>
+<span class="co">#&gt; [237] &quot;db_annovar_normal_pool&quot;           &quot;db_annovar_omim_genemap2&quot;        </span>
+<span class="co">#&gt; [239] &quot;db_annovar_popfreq&quot;               &quot;db_annovar_popfreq_sqlite&quot;       </span>
+<span class="co">#&gt; [241] &quot;db_annovar_radar_sqlite&quot;          &quot;db_annovar_rddpred_sqlite&quot;       </span>
+<span class="co">#&gt; [243] &quot;db_annovar_rediportal_sqlite&quot;     &quot;db_annovar_refgene&quot;              </span>
+<span class="co">#&gt; [245] &quot;db_annovar_regsnpintron&quot;          &quot;db_annovar_revel&quot;                </span>
+<span class="co">#&gt; [247] &quot;db_annovar_revel_sqlite&quot;          &quot;db_annovar_rvis_esv_score&quot;       </span>
+<span class="co">#&gt; [249] &quot;db_annovar_seeqtl&quot;                &quot;db_annovar_snp&quot;                  </span>
+<span class="co">#&gt; [251] &quot;db_annovar_tall_somatic_genes&quot;    &quot;db_annovar_tmcsnpdb&quot;             </span>
+<span class="co">#&gt; [253] &quot;db_annovar_varcards&quot;              &quot;db_annovar_varcards_sqlite&quot;      </span>
+<span class="co">#&gt; [255] &quot;db_ucsc_cytoband&quot;                 &quot;db_ucsc_dnase_clustered&quot;         </span>
+<span class="co">#&gt; [257] &quot;db_ucsc_ensgene&quot;                  &quot;db_ucsc_knowngene&quot;               </span>
+<span class="co">#&gt; [259] &quot;db_ucsc_refgene&quot;                  &quot;db_ucsc_tfbs_clustered&quot;          </span>
+<span class="co">#&gt; [261] &quot;db_blast_env_nr&quot;                  &quot;db_blast_est_human&quot;              </span>
+<span class="co">#&gt; [263] &quot;db_blast_est_mouse&quot;               &quot;db_blast_est_others&quot;             </span>
+<span class="co">#&gt; [265] &quot;db_blast_gss&quot;                     &quot;db_blast_htgs&quot;                   </span>
+<span class="co">#&gt; [267] &quot;db_blast_human_genomic&quot;           &quot;db_blast_landmark&quot;               </span>
+<span class="co">#&gt; [269] &quot;db_blast_mouse_genomic&quot;           &quot;db_blast_nr&quot;                     </span>
+<span class="co">#&gt; [271] &quot;db_blast_nt&quot;                      &quot;db_blast_other_genomic&quot;          </span>
+<span class="co">#&gt; [273] &quot;db_blast_pataa&quot;                   &quot;db_blast_patnt&quot;                  </span>
+<span class="co">#&gt; [275] &quot;db_blast_pdbaa&quot;                   &quot;db_blast_pdbnt&quot;                  </span>
+<span class="co">#&gt; [277] &quot;db_blast_ref_prok_rep_genomes&quot;    &quot;db_blast_ref_viroids_rep_genomes&quot;</span>
+<span class="co">#&gt; [279] &quot;db_blast_ref_viruses_rep_genomes&quot; &quot;db_blast_refseq_genomic&quot;         </span>
+<span class="co">#&gt; [281] &quot;db_blast_refseq_protein&quot;          &quot;db_blast_refseq_rna&quot;             </span>
+<span class="co">#&gt; [283] &quot;db_blast_refseqgene&quot;              &quot;db_blast_sts&quot;                    </span>
+<span class="co">#&gt; [285] &quot;db_blast_swissprot&quot;               &quot;db_blast_taxdb&quot;                  </span>
+<span class="co">#&gt; [287] &quot;db_blast_tsa_nr&quot;                  &quot;db_blast_tsa_nt&quot;                 </span>
+<span class="co">#&gt; [289] &quot;db_blast_vector&quot;</span></code></pre>
+</div>
+<div id="annotation" class="section level3">
+<h3>Annotation</h3>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># Get all supprted anno.name in annovarR</span>
+<span class="kw">get.annotation.names</span>()
+<span class="co">#&gt;   [1] &quot;1000g2015aug_all&quot;                                    </span>
+<span class="co">#&gt;   [2] &quot;1000g2015aug_afr&quot;                                    </span>
+<span class="co">#&gt;   [3] &quot;1000g2015aug_amr&quot;                                    </span>
+<span class="co">#&gt;   [4] &quot;1000g2015aug_eas&quot;                                    </span>
+<span class="co">#&gt;   [5] &quot;1000g2015aug_eur&quot;                                    </span>
+<span class="co">#&gt;   [6] &quot;1000g2015aug_sas&quot;                                    </span>
+<span class="co">#&gt;   [7] &quot;perl_annovar_refGene&quot;                                </span>
+<span class="co">#&gt;   [8] &quot;perl_annovar_ensGene&quot;                                </span>
+<span class="co">#&gt;   [9] &quot;perl_annovar_knownGene&quot;                              </span>
+<span class="co">#&gt;  [10] &quot;perl_annovar_cytoBand&quot;                               </span>
+<span class="co">#&gt;  [11] &quot;perl_annovar_genomicSuperDups&quot;                       </span>
+<span class="co">#&gt;  [12] &quot;perl_annovar_clinvar_20170905&quot;                       </span>
+<span class="co">#&gt;  [13] &quot;perl_annovar_esp6500siv2_all&quot;                        </span>
+<span class="co">#&gt;  [14] &quot;perl_annovar_1000g2015aug_all&quot;                       </span>
+<span class="co">#&gt;  [15] &quot;perl_annovar_1000g2015aug_afr&quot;                       </span>
+<span class="co">#&gt;  [16] &quot;perl_annovar_1000g2015aug_eas&quot;                       </span>
+<span class="co">#&gt;  [17] &quot;perl_annovar1000g2015aug_eur&quot;                        </span>
+<span class="co">#&gt;  [18] &quot;perl_annovar_avsnp142&quot;                               </span>
+<span class="co">#&gt;  [19] &quot;perl_annovar_avsnp144&quot;                               </span>
+<span class="co">#&gt;  [20] &quot;perl_annovar_avsnp147&quot;                               </span>
+<span class="co">#&gt;  [21] &quot;perl_annovar_avsnp150&quot;                               </span>
+<span class="co">#&gt;  [22] &quot;perl_annovar_dbnsfp33a&quot;                              </span>
+<span class="co">#&gt;  [23] &quot;perl_annovar_cosmic70&quot;                               </span>
+<span class="co">#&gt;  [24] &quot;perl_annovar_cosmic81&quot;                               </span>
+<span class="co">#&gt;  [25] &quot;perl_annovar_cosmic82&quot;                               </span>
+<span class="co">#&gt;  [26] &quot;perl_annovar_eigen&quot;                                  </span>
+<span class="co">#&gt;  [27] &quot;perl_annovar_gwava&quot;                                  </span>
+<span class="co">#&gt;  [28] &quot;perl_annovar_cadd13&quot;                                 </span>
+<span class="co">#&gt;  [29] &quot;perl_annovar_cadd13gt10&quot;                             </span>
+<span class="co">#&gt;  [30] &quot;perl_annovar_cadd13gt20&quot;                             </span>
+<span class="co">#&gt;  [31] &quot;perl_annovar_regsnpintron&quot;                           </span>
+<span class="co">#&gt;  [32] &quot;perl_annovar_mitimpact24&quot;                            </span>
+<span class="co">#&gt;  [33] &quot;perl_annovar_popfreq_all_20150413&quot;                   </span>
+<span class="co">#&gt;  [34] &quot;perl_annovar_popfreq_max_20150413&quot;                   </span>
+<span class="co">#&gt;  [35] &quot;perl_annovar_icgc21&quot;                                 </span>
+<span class="co">#&gt;  [36] &quot;perl_annovar_nci60&quot;                                  </span>
+<span class="co">#&gt;  [37] &quot;perl_annovar_gme&quot;                                    </span>
+<span class="co">#&gt;  [38] &quot;perl_annovar_hrcr1&quot;                                  </span>
+<span class="co">#&gt;  [39] &quot;perl_annovar_kaviar_20150923&quot;                        </span>
+<span class="co">#&gt;  [40] &quot;perl_annovar_gnomad_genome&quot;                          </span>
+<span class="co">#&gt;  [41] &quot;perl_annovar_gnomad_exome&quot;                           </span>
+<span class="co">#&gt;  [42] &quot;perl_annovar_exac03nonpsych&quot;                         </span>
+<span class="co">#&gt;  [43] &quot;perl_annovar_exac03nontcga&quot;                          </span>
+<span class="co">#&gt;  [44] &quot;perl_annovar_exac03&quot;                                 </span>
+<span class="co">#&gt;  [45] &quot;perl_annovar_cg69&quot;                                   </span>
+<span class="co">#&gt;  [46] &quot;perl_annovar_cg46&quot;                                   </span>
+<span class="co">#&gt;  [47] &quot;perl_annovar_intervar_20170202&quot;                      </span>
+<span class="co">#&gt;  [48] &quot;perl_annovar_dbscsnv11&quot;                              </span>
+<span class="co">#&gt;  [49] &quot;perl_annovar_merge&quot;                                  </span>
+<span class="co">#&gt;  [50] &quot;avsnp138&quot;                                            </span>
+<span class="co">#&gt;  [51] &quot;avsnp142&quot;                                            </span>
+<span class="co">#&gt;  [52] &quot;avsnp144&quot;                                            </span>
+<span class="co">#&gt;  [53] &quot;avsnp147&quot;                                            </span>
+<span class="co">#&gt;  [54] &quot;avsnp150&quot;                                            </span>
+<span class="co">#&gt;  [55] &quot;bioc_org_hs_eg&quot;                                      </span>
+<span class="co">#&gt;  [56] &quot;bioc_gene2&quot;                                          </span>
+<span class="co">#&gt;  [57] &quot;bioc_gene2alias&quot;                                     </span>
+<span class="co">#&gt;  [58] &quot;bioc_gene2ensembl_gene_id&quot;                           </span>
+<span class="co">#&gt;  [59] &quot;bioc_gene2entrez_gene_id&quot;                            </span>
+<span class="co">#&gt;  [60] &quot;bioc_gene2gene_full_name&quot;                            </span>
+<span class="co">#&gt;  [61] &quot;brvar_v1_core&quot;                                       </span>
+<span class="co">#&gt;  [62] &quot;brvar_v1_extra&quot;                                      </span>
+<span class="co">#&gt;  [63] &quot;cadd&quot;                                                </span>
+<span class="co">#&gt;  [64] &quot;caddgt10&quot;                                            </span>
+<span class="co">#&gt;  [65] &quot;caddgt20&quot;                                            </span>
+<span class="co">#&gt;  [66] &quot;cadd13&quot;                                              </span>
+<span class="co">#&gt;  [67] &quot;cadd13gt10&quot;                                          </span>
+<span class="co">#&gt;  [68] &quot;cadd13gt20&quot;                                          </span>
+<span class="co">#&gt;  [69] &quot;nightly_civic_gene_summaries&quot;                        </span>
+<span class="co">#&gt;  [70] &quot;clinvar_20170130&quot;                                    </span>
+<span class="co">#&gt;  [71] &quot;cosmic70&quot;                                            </span>
+<span class="co">#&gt;  [72] &quot;cosmic81&quot;                                            </span>
+<span class="co">#&gt;  [73] &quot;cosmic82&quot;                                            </span>
+<span class="co">#&gt;  [74] &quot;cscd_cancer_circrna&quot;                                 </span>
+<span class="co">#&gt;  [75] &quot;cscd_common_circrna&quot;                                 </span>
+<span class="co">#&gt;  [76] &quot;cscd_normal_circrna&quot;                                 </span>
+<span class="co">#&gt;  [77] &quot;darned&quot;                                              </span>
+<span class="co">#&gt;  [78] &quot;dbnsfp30a&quot;                                           </span>
+<span class="co">#&gt;  [79] &quot;dbnsfp31a_interpro&quot;                                  </span>
+<span class="co">#&gt;  [80] &quot;dbnsfp33a&quot;                                           </span>
+<span class="co">#&gt;  [81] &quot;dbscsnv11&quot;                                           </span>
+<span class="co">#&gt;  [82] &quot;dhs_gene_connectivity_2012&quot;                          </span>
+<span class="co">#&gt;  [83] &quot;eigen&quot;                                               </span>
+<span class="co">#&gt;  [84] &quot;epi_genes_v1&quot;                                        </span>
+<span class="co">#&gt;  [85] &quot;exac03&quot;                                              </span>
+<span class="co">#&gt;  [86] &quot;exac03nontcga&quot;                                       </span>
+<span class="co">#&gt;  [87] &quot;exac03nonpsych&quot;                                      </span>
+<span class="co">#&gt;  [88] &quot;gdi_score_full_10282015&quot;                             </span>
+<span class="co">#&gt;  [89] &quot;gme&quot;                                                 </span>
+<span class="co">#&gt;  [90] &quot;gnomad_exome&quot;                                        </span>
+<span class="co">#&gt;  [91] &quot;gnomad_genome&quot;                                       </span>
+<span class="co">#&gt;  [92] &quot;gtex_adipose_subcutaneous.v7.egenes&quot;                 </span>
+<span class="co">#&gt;  [93] &quot;gtex_adipose_visceral_omentum.v7.egenes&quot;             </span>
+<span class="co">#&gt;  [94] &quot;gtex_adrenal_gland.v7.egenes&quot;                        </span>
+<span class="co">#&gt;  [95] &quot;gtex_artery_aorta.v7.egenes&quot;                         </span>
+<span class="co">#&gt;  [96] &quot;gtex_artery_coronary.v7.egenes&quot;                      </span>
+<span class="co">#&gt;  [97] &quot;gtex_artery_tibial.v7.egenes&quot;                        </span>
+<span class="co">#&gt;  [98] &quot;gtex_brain_amygdala.v7.egenes&quot;                       </span>
+<span class="co">#&gt;  [99] &quot;gtex_brain_anterior_cingulate_cortex_ba24.v7.egenes&quot; </span>
+<span class="co">#&gt; [100] &quot;gtex_brain_caudate_basal_ganglia.v7.egenes&quot;          </span>
+<span class="co">#&gt; [101] &quot;gtex_brain_cerebellar_hemisphere.v7.egenes&quot;          </span>
+<span class="co">#&gt; [102] &quot;gtex_brain_cerebellum.v7.egenes&quot;                     </span>
+<span class="co">#&gt; [103] &quot;gtex_brain_cortex.v7.egenes&quot;                         </span>
+<span class="co">#&gt; [104] &quot;gtex_brain_frontal_cortex_ba9.v7.egenes&quot;             </span>
+<span class="co">#&gt; [105] &quot;gtex_brain_hippocampus.v7.egenes&quot;                    </span>
+<span class="co">#&gt; [106] &quot;gtex_brain_hypothalamus.v7.egenes&quot;                   </span>
+<span class="co">#&gt; [107] &quot;gtex_brain_nucleus_accumbens_basal_ganglia.v7.egenes&quot;</span>
+<span class="co">#&gt; [108] &quot;gtex_brain_putamen_basal_ganglia.v7.egenes&quot;          </span>
+<span class="co">#&gt; [109] &quot;gtex_brain_spinal_cord_cervical_c_1.v7.egenes&quot;       </span>
+<span class="co">#&gt; [110] &quot;gtex_brain_substantia_nigra.v7.egenes&quot;               </span>
+<span class="co">#&gt; [111] &quot;gtex_breast_mammary_tissue.v7.egenes&quot;                </span>
+<span class="co">#&gt; [112] &quot;gtex_cells_ebv_transformed_lymphocytes.v7.egenes&quot;    </span>
+<span class="co">#&gt; [113] &quot;gtex_cells_transformed_fibroblasts.v7.egenes&quot;        </span>
+<span class="co">#&gt; [114] &quot;gtex_colon_sigmoid.v7.egenes&quot;                        </span>
+<span class="co">#&gt; [115] &quot;gtex_colon_transverse.v7.egenes&quot;                     </span>
+<span class="co">#&gt; [116] &quot;gtex_esophagus_gastroesophageal_junction.v7.egenes&quot;  </span>
+<span class="co">#&gt; [117] &quot;gtex_esophagus_mucosa.v7.egenes&quot;                     </span>
+<span class="co">#&gt; [118] &quot;gtex_esophagus_muscularis.v7.egenes&quot;                 </span>
+<span class="co">#&gt; [119] &quot;gtex_heart_atrial_appendage.v7.egenes&quot;               </span>
+<span class="co">#&gt; [120] &quot;gtex_heart_left_ventricle.v7.egenes&quot;                 </span>
+<span class="co">#&gt; [121] &quot;gtex_liver.v7.egenes&quot;                                </span>
+<span class="co">#&gt; [122] &quot;gtex_lung.v7.egenes&quot;                                 </span>
+<span class="co">#&gt; [123] &quot;gtex_minor_salivary_gland.v7.egenes&quot;                 </span>
+<span class="co">#&gt; [124] &quot;gtex_muscle_skeletal.v7.egenes&quot;                      </span>
+<span class="co">#&gt; [125] &quot;gtex_nerve_tibial.v7.egenes&quot;                         </span>
+<span class="co">#&gt; [126] &quot;gtex_ovary.v7.egenes&quot;                                </span>
+<span class="co">#&gt; [127] &quot;gtex_pancreas.v7.egenes&quot;                             </span>
+<span class="co">#&gt; [128] &quot;gtex_pituitary.v7.egenes&quot;                            </span>
+<span class="co">#&gt; [129] &quot;gtex_prostate.v7.egenes&quot;                             </span>
+<span class="co">#&gt; [130] &quot;gtex_skin_not_sun_exposed_suprapubic.v7.egenes&quot;      </span>
+<span class="co">#&gt; [131] &quot;gtex_skin_sun_exposed_lower_leg.v7.egenes&quot;           </span>
+<span class="co">#&gt; [132] &quot;gtex_small_intestine_terminal_ileum.v7.egenes&quot;       </span>
+<span class="co">#&gt; [133] &quot;gtex_spleen.v7.egenes&quot;                               </span>
+<span class="co">#&gt; [134] &quot;gtex_stomach.v7.egenes&quot;                              </span>
+<span class="co">#&gt; [135] &quot;gtex_testis.v7.egenes&quot;                               </span>
+<span class="co">#&gt; [136] &quot;gtex_thyroid.v7.egenes&quot;                              </span>
+<span class="co">#&gt; [137] &quot;gtex_uterus.v7.egenes&quot;                               </span>
+<span class="co">#&gt; [138] &quot;gtex_vagina.v7.egenes&quot;                               </span>
+<span class="co">#&gt; [139] &quot;gtex_whole_blood.v7.egenes&quot;                          </span>
+<span class="co">#&gt; [140] &quot;gwava&quot;                                               </span>
+<span class="co">#&gt; [141] &quot;hgnc_coding_gene2alias&quot;                              </span>
+<span class="co">#&gt; [142] &quot;hgnc_coding_pre2gene&quot;                                </span>
+<span class="co">#&gt; [143] &quot;hrcr1&quot;                                               </span>
+<span class="co">#&gt; [144] &quot;icgc21&quot;                                              </span>
+<span class="co">#&gt; [145] &quot;intervar_20170202&quot;                                   </span>
+<span class="co">#&gt; [146] &quot;kaviar_20150923&quot;                                     </span>
+<span class="co">#&gt; [147] &quot;lncediting&quot;                                          </span>
+<span class="co">#&gt; [148] &quot;loftool_scores&quot;                                      </span>
+<span class="co">#&gt; [149] &quot;mcap&quot;                                                </span>
+<span class="co">#&gt; [150] &quot;nci60&quot;                                               </span>
+<span class="co">#&gt; [151] &quot;2016sih_wes_ball&quot;                                    </span>
+<span class="co">#&gt; [152] &quot;2016sih_wes_tall&quot;                                    </span>
+<span class="co">#&gt; [153] &quot;2016sih_wes_nkt&quot;                                     </span>
+<span class="co">#&gt; [154] &quot;2016sih_wgs_nkt&quot;                                     </span>
+<span class="co">#&gt; [155] &quot;2016sih_wgs_dlbcl&quot;                                   </span>
+<span class="co">#&gt; [156] &quot;omim_genemap2_ensembl_gene_id2phenotype&quot;             </span>
+<span class="co">#&gt; [157] &quot;omim_genemap2_entrez_gene_id2phenotype&quot;              </span>
+<span class="co">#&gt; [158] &quot;omim_genemap2_symbol2phenotype&quot;                      </span>
+<span class="co">#&gt; [159] &quot;popfreq_max_20150413&quot;                                </span>
+<span class="co">#&gt; [160] &quot;popfreq_all_20150413&quot;                                </span>
+<span class="co">#&gt; [161] &quot;radar2&quot;                                              </span>
+<span class="co">#&gt; [162] &quot;rddpred_mes&quot;                                         </span>
+<span class="co">#&gt; [163] &quot;REDIportal&quot;                                          </span>
+<span class="co">#&gt; [164] &quot;ucsc_refgene&quot;                                        </span>
+<span class="co">#&gt; [165] &quot;ens_refgene&quot;                                         </span>
+<span class="co">#&gt; [166] &quot;revel&quot;                                               </span>
+<span class="co">#&gt; [167] &quot;rs2pos138&quot;                                           </span>
+<span class="co">#&gt; [168] &quot;rs2pos142&quot;                                           </span>
+<span class="co">#&gt; [169] &quot;rs2pos144&quot;                                           </span>
+<span class="co">#&gt; [170] &quot;rs2pos147&quot;                                           </span>
+<span class="co">#&gt; [171] &quot;rs2pos150&quot;                                           </span>
+<span class="co">#&gt; [172] &quot;rvis_exac_4kw&quot;                                       </span>
+<span class="co">#&gt; [173] &quot;seeqtl_qvalue_hapmap3_cis&quot;                           </span>
+<span class="co">#&gt; [174] &quot;seeqtl_qvalue_hapmap3_trans&quot;                         </span>
+<span class="co">#&gt; [175] &quot;seeqtl_qvalue_myers_cis&quot;                             </span>
+<span class="co">#&gt; [176] &quot;seeqtl_qvalue_myers_trans&quot;                           </span>
+<span class="co">#&gt; [177] &quot;tall_somatic_genes_20171206&quot;                         </span>
+<span class="co">#&gt; [178] &quot;tmcsnpdb&quot;                                            </span>
+<span class="co">#&gt; [179] &quot;varcards&quot;                                            </span>
+<span class="co">#&gt; [180] &quot;vcfanno_demo&quot;                                        </span>
+<span class="co">#&gt; [181] &quot;vep_all&quot;</span>
+
+<span class="co"># Get annotation name needed download.name and </span>
+<span class="co"># you can use download.database to download database using the download.name.</span>
+download.name &lt;-<span class="st"> </span><span class="kw">get.download.name</span>(<span class="st">'avsnp147'</span>)
+
+<span class="co"># Database configuration file</span>
+database.cfg &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">'extdata'</span>, <span class="st">'config/databases.toml'</span>, <span class="dt">package =</span> <span class="st">&quot;annovarR&quot;</span>)
+
+<span class="co"># Get anno.name needed input cols</span>
+<span class="kw">get.annotation.needcols</span>(<span class="st">'avsnp147'</span>)
+<span class="co">#&gt; [1] &quot;chr&quot;   &quot;start&quot; &quot;end&quot;   &quot;ref&quot;   &quot;alt&quot;</span>
+
+<span class="co"># build sqlite database</span>
+for(i in <span class="kw">c</span>(<span class="st">&quot;hg19_ALL.sites.2015_08&quot;</span>, <span class="st">&quot;hg19_avsnp147&quot;</span>)) {
+  database &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="kw">sprintf</span>(<span class="st">&quot;demo/%s.txt&quot;</span>, i), <span class="dt">package =</span> <span class="st">&quot;annovarR&quot;</span>)
+  sqlite.db &lt;-<span class="st"> </span><span class="kw">sprintf</span>(<span class="st">&quot;%s/%s.sqlite&quot;</span>, <span class="kw">tempdir</span>(), i)
+  <span class="kw">file.copy</span>(database, <span class="kw">sprintf</span>(<span class="st">&quot;%s/%s.txt&quot;</span>, <span class="kw">tempdir</span>(), i))
+  <span class="kw">sqlite.build</span>(database, <span class="dt">sqlite.connect.params =</span> <span class="kw">list</span>(<span class="dt">dbname =</span> sqlite.db, <span class="dt">table.name =</span> <span class="kw">sprintf</span>(<span class="st">&quot;%s&quot;</span>, 
+    i)))
+}
+
+<span class="co"># use the defined rule to annotate 1000 Genome Project frequency</span>
+database.dir &lt;-<span class="st"> </span><span class="kw">tempdir</span>()
+chr &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;chr1&quot;</span>, <span class="st">&quot;chr2&quot;</span>, <span class="st">&quot;chr1&quot;</span>)
+start &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;10177&quot;</span>, <span class="st">&quot;10177&quot;</span>, <span class="st">&quot;10020&quot;</span>)
+end &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;10177&quot;</span>, <span class="st">&quot;10177&quot;</span>, <span class="st">&quot;10020&quot;</span>)
+ref &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;-&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>)
+alt &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;C&quot;</span>, <span class="st">&quot;AC&quot;</span>, <span class="st">&quot;-&quot;</span>)
+dat &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">chr =</span> chr, <span class="dt">start =</span> start, <span class="dt">end =</span> end, <span class="dt">ref =</span> ref, <span class="dt">alt =</span> alt)
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">dat =</span> dat, <span class="dt">anno.name =</span> <span class="st">&quot;1000g2015aug_all&quot;</span>, <span class="dt">database.dir =</span> database.dir, <span class="dt">db.type =</span> <span class="st">&quot;txt&quot;</span>)
+x
+<span class="co">#&gt;    1000g2015aug_all</span>
+<span class="co">#&gt; 1:         0.425319</span>
+<span class="co">#&gt; 2:               NA</span>
+<span class="co">#&gt; 3:               NA</span>
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">dat =</span> dat, <span class="dt">anno.name =</span> <span class="st">&quot;1000g2015aug_all&quot;</span>, <span class="dt">database.dir =</span> database.dir, <span class="dt">db.type =</span> <span class="st">&quot;sqlite&quot;</span>)
+x
+<span class="co">#&gt;    1000g2015aug_all</span>
+<span class="co">#&gt; 1:         0.425319</span>
+<span class="co">#&gt; 2:               NA</span>
+<span class="co">#&gt; 3:               NA</span>
+
+<span class="co"># Do annotation using full match function (default to use chr, start to select data </span>
+<span class="co"># and use chr, start, end, ref, and alt to match data)</span>
+<span class="co"># Use `?annotation.cols.match` to see more detail about `annotation.cols.match`</span>
+chr &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;chr1&quot;</span>, <span class="st">&quot;chr2&quot;</span>, <span class="st">&quot;chr1&quot;</span>)
+start &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;10020&quot;</span>, <span class="st">&quot;10020&quot;</span>, <span class="st">&quot;10020&quot;</span>)
+end &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;10020&quot;</span>, <span class="st">&quot;10020&quot;</span>, <span class="st">&quot;10020&quot;</span>)
+ref &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>)
+alt &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;-&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="st">&quot;-&quot;</span>)
+dat &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">chr =</span> chr, <span class="dt">start =</span> start, <span class="dt">end =</span> end, <span class="dt">ref =</span> ref, <span class="dt">alt =</span> alt)
+x &lt;-<span class="st"> </span><span class="kw">annotation.cols.match</span>(dat, <span class="st">&quot;avsnp147&quot;</span>, <span class="dt">database.dir =</span> database.dir, 
+  <span class="dt">return.col.names =</span> <span class="st">&quot;avSNP147&quot;</span>, <span class="dt">db.type =</span> <span class="st">&quot;sqlite&quot;</span>)
+x
+<span class="co">#&gt;       avSNP147</span>
+<span class="co">#&gt; 1: rs775809821</span>
+<span class="co">#&gt; 2:          NA</span>
+<span class="co">#&gt; 3: rs775809821</span>
+
+<span class="co"># Region match mode</span>
+bed.file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;demo/example.bed&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;annovarR&quot;</span>)
+chr &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;chr10&quot;</span>, <span class="st">&quot;chr1&quot;</span>)
+start &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;100188904&quot;</span>, <span class="st">&quot;100185955&quot;</span>)
+end &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;100188904&quot;</span>, <span class="st">&quot;100185955&quot;</span>)
+dat &lt;-<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">chr =</span> chr, <span class="dt">start =</span> start, <span class="dt">end =</span> end)
+
+<span class="co"># format.cols.plus.chr will add &quot;chr&quot; in chr colum </span>
+<span class="co"># if your input chr colum not contain string 'chr'</span>
+<span class="co"># format.db.region.tb will process the region matched data</span>
+<span class="co">#x &lt;- annotation.region.match(dat = dat, database.dir = tempdir(), dbname.fixed = bed.file, </span>
+<span class="co">#  table.name.fixed = &quot;bed&quot;, db.type = &quot;txt&quot;, format.dat.fun = &quot;format.cols.plus.chr&quot;, </span>
+<span class="co">#  format.db.tb.fun = &quot;format.db.region.tb&quot;)</span>
+<span class="co">#x</span>
+
+<span class="co"># Convert snp rs number to genomic location</span>
+snp.id &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;rs775809821&quot;</span>, <span class="st">&quot;rs768019142&quot;</span>)
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">dat =</span> <span class="kw">data.table</span>(<span class="dt">rs =</span> <span class="kw">rep</span>(snp.id, <span class="dv">3</span>)), <span class="dt">database.dir =</span> database.dir, <span class="dt">anno.name =</span> <span class="st">&quot;rs2pos147&quot;</span>, 
+    <span class="dt">buildver =</span> <span class="st">&quot;hg19&quot;</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>, <span class="dt">db.type =</span> <span class="st">&quot;txt&quot;</span>)
+
+<span class="co"># Annotate avinput format R data using ANNOVAR</span>
+<span class="co"># set debug to TRUE will not to run command</span>
+chr =<span class="st"> &quot;chr1&quot;</span>
+start =<span class="st"> &quot;123&quot;</span>
+end =<span class="st"> &quot;123&quot;</span>
+ref =<span class="st"> &quot;A&quot;</span>
+alt =<span class="st"> &quot;C&quot;</span>
+dat &lt;-<span class="st"> </span><span class="kw">data.table</span>(chr, start, end, ref, alt)
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(dat, <span class="st">&quot;perl_annovar_refGene&quot;</span>, <span class="dt">annovar.dir =</span> <span class="st">&quot;/opt/bin/annovar&quot;</span>, 
+             <span class="dt">database.dir =</span> <span class="st">&quot;{{annovar.dir}}/humandb&quot;</span>, <span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; /usr/bin/perl /u4/jhuanglabbin/annovar/table_annovar.pl /tmp/RtmpsBkFv9/file3af747e0194f {annovar.dir}/humandb -buildver hg19  -remove -protocol refGene -operation g -nastring NA</span>
+
+<span class="co"># Annotate VCF file using ANNOVAR</span>
+<span class="co"># set debug to TRUE will not to run command</span>
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">anno.name =</span> <span class="st">&quot;perl_annovar_ensGene&quot;</span>, <span class="dt">input.file =</span> <span class="st">&quot;/tmp/test.vcf&quot;</span>,
+             <span class="dt">annovar.dir =</span> <span class="st">&quot;/opt/bin/annovar/&quot;</span>, <span class="dt">database.dir =</span> <span class="st">&quot;{{annovar.dir}}/humandb&quot;</span>, 
+             <span class="dt">out =</span> <span class="kw">tempfile</span>(), <span class="dt">vcfinput =</span> <span class="ot">TRUE</span>, <span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; /usr/bin/perl /u4/jhuanglabbin/annovar/table_annovar.pl /tmp/test.vcf {annovar.dir}/humandb -buildver hg19 -out /tmp/RtmpsBkFv9/file3af732639362 -remove -protocol ensGene -operation g -nastring NA  -vcfinput</span>
+
+<span class="co"># Annotation VCF file use VEP</span>
+<span class="kw">vep</span>(<span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; vep --cache_version 91 --assembly GRCh37 --dir /home/ljf/.vep --output_file variant_effect_output.txt --cache --offline --everything</span>
+<span class="co">#&gt; [1] &quot;vep --cache_version 91 --assembly GRCh37 --dir /home/ljf/.vep --output_file variant_effect_output.txt --cache --offline --everything &quot;</span>
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">anno.name =</span> <span class="st">&quot;vep_all&quot;</span>, <span class="dt">input.file =</span> <span class="st">&quot;/tmp/test.vcf&quot;</span>,
+             <span class="dt">out =</span> <span class="kw">tempfile</span>(), <span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; vep --cache_version 91 --assembly hg19 --dir /home/ljf/.vep --output_file /tmp/RtmpsBkFv9/file3af72133bad9 --input_file /tmp/test.vcf --cache --offline --everything</span>
+
+<span class="co"># Annotation VCF file use vcfanno</span>
+<span class="kw">vcfanno</span>(<span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; vcfanno_linux64 -p 2 /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/conf.toml input.vcf &gt; output.vcf</span>
+<span class="co">#&gt; [1] &quot;vcfanno_linux64 -p 2 /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/conf.toml input.vcf &gt; output.vcf&quot;</span>
+x &lt;-<span class="st"> </span><span class="kw">annotation</span>(<span class="dt">anno.name =</span> <span class="st">&quot;vcfanno_demo&quot;</span>, <span class="dt">input.file =</span> <span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;demo/vcfanno_demo/query.vcf.gz&quot;</span>, 
+                   <span class="dt">package =</span> <span class="st">&quot;annovarR&quot;</span>), <span class="dt">out =</span> <span class="st">&quot;test.vcf&quot;</span>, <span class="dt">vcfanno =</span> <span class="st">&quot;/path/vcfanno&quot;</span>, <span class="dt">debug =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; vcfanno_linux64 -base-path /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/ -lua /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/custom.lua -p 2 /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/conf.toml /tmp/RtmpgbgH1T/Rinst3a9d730a2e43/annovarR/extdata/demo/vcfanno_demo/query.vcf.gz &gt; test.vcf</span>
+
+
+<span class="co"># Annotate gene from BioConductor org.hs.eg.db</span>
+gene &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;TP53&quot;</span>, <span class="st">&quot;NSD2&quot;</span>)
+<span class="kw">annotation</span>(<span class="dt">dat =</span> gene, <span class="dt">anno.name =</span> <span class="st">&quot;bioc_gene2alias&quot;</span>)
+<span class="co">#&gt; 'select()' returned 1:many mapping between keys and columns</span>
+<span class="co">#&gt;     SYMBOL  ALIAS</span>
+<span class="co">#&gt;  1:   TP53   BCC7</span>
+<span class="co">#&gt;  2:   TP53   LFS1</span>
+<span class="co">#&gt;  3:   TP53    P53</span>
+<span class="co">#&gt;  4:   TP53  TRP53</span>
+<span class="co">#&gt;  5:   TP53   TP53</span>
+<span class="co">#&gt;  6:   NSD2  KMT3F</span>
+<span class="co">#&gt;  7:   NSD2  KMT3G</span>
+<span class="co">#&gt;  8:   NSD2  MMSET</span>
+<span class="co">#&gt;  9:   NSD2 REIIBP</span>
+<span class="co">#&gt; 10:   NSD2   TRX5</span>
+<span class="co">#&gt; 11:   NSD2    WHS</span>
+<span class="co">#&gt; 12:   NSD2  WHSC1</span>
+<span class="co">#&gt; 13:   NSD2   NSD2</span></code></pre>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

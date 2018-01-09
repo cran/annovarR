@@ -1,0 +1,122 @@
+2017-01-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* R/annotation.R annotation.cols.match and 
+		annotation.region.match added parameter fread.db.params
+
+2017-01-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* added mysql.auto.build and mysql.auto.index
+		* supported external tools vep and vcfanno 
+		* use vcfR package to parse VCF files to data.table object
+
+2017-12-19 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* modified in dependence
+		* change download.database parameters order
+
+2017-12-15 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* if os is windows set annovar.dir in PATH
+		* use annovar.anno.names when anno.name equal perl_annovar_merge
+		* download.database support multiple download.name
+		* improve test coverage
+
+2017-12-14 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* fix testthat 2.0 check error
+
+2017-12-13 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* use ANNOVAR to annotate R object and input.file
+		* dbscsnv11 be supported
+		* add nastring paramter in annovar
+
+2017-12-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* add tall_somatic_genes_201706
+
+2017-12-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* add set.db.sync.version and set.table.sync.version to get db and
+		table name (R/external_function.R)
+
+2017-12-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* fix start_index length error
+		* when skip != 0, the header set FALSE in fread (sqlite.auto.build)
+		* return.col.names.profix be support
+
+2017-12-03 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* optimize sqlite.auto.build
+		* add func get.annotation.needcols in R/get.R
+		* add param overwrite and append in sqlite.auto.build 
+
+2017-12-02 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* download.database use default version
+		* update function annovar document
+		* download.database use download.name and download.cfg
+		* add function get.download.name
+		* dbname.fixed and table.name.fixed can be used in database.cfg
+		* new database be supoorted
+		* set function parameters default value
+
+2017-11-30 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* b_all_rnaseq_v1_core and b_all_rnaseq_v1_extra be added
+
+2017-11-29 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* hgnc_coding_gene2pre and hgnc_coding_pre2gene be supported
+		* not show warnings in fread database step
+
+2017-11-27 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* use do.call process external function 
+		* document re-format
+		* convert2annovar.pl be added in annovar
+
+2017-11-26 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* sqlite.auto.build use split_row_file to 
+		process big file
+		* vignettes be added
+
+2017-11-24 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* Function annovar be added in R/external_tools.R
+
+2017-11-23 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* CSCD database be supported
+		* region match full tested
+		* epi_genes_v1 be supported
+
+2017-11-22 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* Parallel and big.file mode be extract
+
+2017-06-08 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* Download .sql file and convert to sqlite automatically
+
+2017-06-07 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* sql2sqlite be added in R/build.R
+
+2017-06-06 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* finished file check step be added
+
+2017-06-05 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+
+		* MySQL db.type be supported
+		* build database from a file or a data.table object (R/build.R)
+		* dbname.fixed and table.name.fixed be added (R/annotation.R)
+
+2017-06-04 Li Jianfeng <lee_jianfeng@sjtu.edu.cn>
+		
+		* ANNOVAR databases download full supported
+		* download.database use buildver
+		* Unit test of download.database

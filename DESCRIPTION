@@ -1,0 +1,27 @@
+Package: annovarR
+Type: Package
+Title: Integrated Framework to Annotate Genetic Variants
+Version: 1.0.0
+Authors@R: person("Jianfeng", "Li", email = "lee_jianfeng@sjtu.edu.cn", role = c("aut", "cre"))
+Description: 
+    The 'annovarR' package provides R functions as well as database resources which offer an integrated framework to annotate genetic variants from genome and transcriptome data. The wrapper functions of 'annovarR' unified the interface of many published annotation tools, such as 'VEP' (<http://asia.ensembl.org/info/docs/tools/vep/index.html>), 'ANNOVAR' (<http://annovar.openbioinformatics.org/>), 'vcfanno' (<https://github.com/brentp/vcfanno>) and 'AnnotationDbi' (<http://www.bioconductor.org/packages/release/bioc/html/AnnotationDbi.html>). It also simplified the use of some of the external annotation tools in R. Besides, massive published genetic variants annotation databases were integrated into 'annovarR'. For example, 'annovarR' provides a newly RNA-seq allele frequency database, BRVar, which built from total 1,285 cases public B-progenitor acute lymphoblastic leukemia (B-ALL) transcriptome data.
+Depends: R (>= 3.3.0)
+URL: https://github.com/JhuangLab/annovarR
+BugReports: https://github.com/JhuangLab/annovarR/issues
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: stringr (>= 1.2.0), configr (>= 0.2.2), BioInstaller (>=
+        0.3.2), ngstk (>= 0.2.1), DBI (>= 0.6-1), data.table (>=
+        1.10.0), RSQLite (>= 2.0), futile.logger (>= 1.4.3), stringi
+        (>= 1.1.5), RMySQL (>= 0.10.11), vcfR (>= 1.6.0),
+        AnnotationDbi, glue, methods,
+RoxygenNote: 6.0.1
+Suggests: testthat, knitr, rmarkdown, org.Hs.eg.db
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2018-01-08 15:29:16 UTC; ljf
+Author: Jianfeng Li [aut, cre]
+Maintainer: Jianfeng Li <lee_jianfeng@sjtu.edu.cn>
+Repository: CRAN
+Date/Publication: 2018-01-09 09:29:42 UTC
